@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { getAllEvents } from "@/app/utils/api"
 
 // Dummy data
 const initialJobs = [
@@ -14,23 +15,32 @@ const initialJobs = [
   { id: 3, title: "Bag Designer", company: "BagMasters", category: "Bag Making", type: "Hybrid" },
 ]
 
-const initialEvents = [
-  { id: 1, title: "Women in Crafts Workshop", date: "2023-07-15", location: "Online" },
-  { id: 2, title: "Entrepreneurship Seminar", date: "2023-08-01", location: "City Convention Center" },
-]
-
 export default function WomenDashboard() {
   const [jobs, setJobs] = useState(initialJobs)
-  const [events, setEvents] = useState(initialEvents)
+  const [events, setEvents] = useState([])
   const [appliedJobs, setAppliedJobs] = useState([])
   const [selectedJob, setSelectedJob] = useState(null)
   const [selectedEvent, setSelectedEvent] = useState(null)
 
-  const handleApplyJob = (e) => {
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const fetchedEvents = await getAllEvents();
+        setEvents(fetchedEvents);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  const handleApplyJob = (e, job) => {
+    console.log("adf")
     e.preventDefault()
     const formData = new FormData(e.target)
     const applicationData = Object.fromEntries(formData)
-    setAppliedJobs([...appliedJobs, { ...selectedJob, ...applicationData }])
+    setAppliedJobs([...appliedJobs, { ...job, ...applicationData }])
     setSelectedJob(null)
   }
 
@@ -61,7 +71,9 @@ export default function WomenDashboard() {
                       {job.company} - {job.category}
                     </p>
                   </div>
-                  <Button onClick={() => setSelectedJob(job)} size="sm">
+                  <Button onClick={() =>
+                     setSelectedJob(job)
+                  } size="sm">
                     Apply
                   </Button>
                 </li>
@@ -81,11 +93,11 @@ export default function WomenDashboard() {
           <CardContent>
             <ul className="space-y-4">
               {events.map((event) => (
-                <li key={event.id} className="flex justify-between items-center">
+                <li key={event._id} className="flex justify-between items-center">
                   <div>
                     <h3 className="font-semibold text-gray-800 dark:text-white">{event.title}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300">
-                      {event.date} - {event.location}
+                      {new Date(event.date).toLocaleDateString()} - {event.location}
                     </p>
                   </div>
                   <Button onClick={() => setSelectedEvent(event)} variant="outline" size="sm">
@@ -104,29 +116,30 @@ export default function WomenDashboard() {
       </div>
 
       {selectedJob && (
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Apply for {selectedJob.title}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleApplyJob} className="space-y-4">
-              <div>
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" name="name" required />
-              </div>
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" type="email" required />
-              </div>
-              <div>
-                <Label htmlFor="age">Age</Label>
-                <Input id="age" name="age" type="number" required />
-              </div>
-              <Button type="submit">Submit Application</Button>
-            </form>
-          </CardContent>
-        </Card>
-      )}
+  <Card className="mb-8">
+    <CardHeader>
+      <CardTitle>Apply for {selectedJob.title}</CardTitle>
+    </CardHeader>
+    <CardContent>
+      <form onSubmit={(e) => handleApplyJob(e, selectedJob)} className="space-y-4">
+        <div>
+          <Label htmlFor="name">Name</Label>
+          <Input id="name" name="name" required />
+        </div>
+        <div>
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" name="email" type="email" required />
+        </div>
+        <div>
+          <Label htmlFor="age">Age</Label>
+          <Input id="age" name="age" type="number" required />
+        </div>
+        <Button type="submit">Submit Application</Button>
+      </form>
+    </CardContent>
+  </Card>
+)}
+
 
       {selectedEvent && (
         <Card className="mb-8">

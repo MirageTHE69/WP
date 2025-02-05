@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ArrowRight } from "lucide-react"
+import { createEvent, getAllEvents } from "@/app/utils/api"
 
 // Dummy data
 const initialJobs = [
@@ -23,9 +24,22 @@ const initialEvents = [
 
 export default function OrganizationDashboard() {
   const [jobs, setJobs] = useState(initialJobs)
-  const [events, setEvents] = useState(initialEvents)
+  const [events, setEvents] = useState([])
   const [showAddJobForm, setShowAddJobForm] = useState(false)
   const [showAddEventForm, setShowAddEventForm] = useState(false)
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const fetchedEvents = await getAllEvents()
+        setEvents(fetchedEvents)
+      } catch (error) {
+        console.error("Error fetching events:", error)
+      }
+    }
+
+    fetchEvents()
+  }, [])
 
   const handleAddJob = (e) => {
     e.preventDefault()
@@ -35,12 +49,19 @@ export default function OrganizationDashboard() {
     setShowAddJobForm(false)
   }
 
-  const handleAddEvent = (e) => {
+  const handleAddEvent = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
     const eventData = Object.fromEntries(formData)
-    setEvents([...events, { id: events.length + 1, ...eventData }])
-    setShowAddEventForm(false)
+    
+    try {
+      console.log(eventData)
+      const newEvent = await createEvent(eventData)
+      setEvents([...events, { id: events.length + 1, ...newEvent }])
+      setShowAddEventForm(false)
+    } catch (error) {
+      console.error("Error adding event:", error)
+    }
   }
 
   return (
