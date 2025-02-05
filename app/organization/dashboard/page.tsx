@@ -55,7 +55,6 @@ export default function OrganizationDashboard() {
     const eventData = Object.fromEntries(formData)
     
     try {
-      console.log(eventData)
       const newEvent = await createEvent(eventData)
       setEvents([...events, { id: events.length + 1, ...newEvent }])
       setShowAddEventForm(false)
