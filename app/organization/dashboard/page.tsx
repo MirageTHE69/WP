@@ -208,7 +208,7 @@ export default function OrganizationDashboard() {
                   <div>
                     <h3 className="font-semibold text-gray-800 dark:text-white">{event.title}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300">
-                      {event.date} - {event.location}
+                      {new Date(event.date).toLocaleDateString()} - {event.location}
                     </p>
                   </div>
                   <Button asChild variant="outline" size="sm">
