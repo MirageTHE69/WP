@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { fetchJobs } from "@/app/services/jobApi";
-import { getAllEvents } from "@/app/utils/api"
+import { fetchJobs } from "@/app/utils/jobApi";
+import { getAllEvents } from "@/app/utils/eventApi"
 
 // Dummy data
 const initialJobs = [

@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowRight } from "lucide-react";
-import { fetchJobs, createJob } from "@/app/services/jobApi";
-import { createEvent, getAllEvents } from "@/app/utils/api"
+import { fetchJobs, createJob } from "@/app/utils/jobApi";
+import { createEvent, getAllEvents } from "@/app/utils/eventApi"
 
 // Dummy data
 const initialEvents = [
@@ -60,6 +60,7 @@ export default function OrganizationDashboard() {
   const handleAddJob = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
+    console.log(e.target)
     const jobData = Object.fromEntries(formData);
     try {
       const newJob = await createJob(jobData);
@@ -208,11 +209,8 @@ export default function OrganizationDashboard() {
                 <Input id="date" name="date" type="date" required />
               </div>
               <div>
-                <Label htmlFor="location">Locations</Label>
-                <select id="location" name="location" required>
-                  <option value="Remote">Remote</option>
-                  <option value="In-office">In-office</option>
-                </select>
+                <Label htmlFor="location">Location</Label>
+                <Input id="location" name="location" required />
               </div>
               <Button type="submit">Create Event</Button>
             </form>

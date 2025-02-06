@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8000/organization/jobs";
+const API_URL = "http://localhost:8000";
 
 // Fetch all jobs
 export const fetchJobs = async () => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await axios.get(`${API_URL}/organization/jobs`);
     return response.data;
   } catch (error) {
     console.error("Error fetching jobs:", error);
@@ -16,7 +16,7 @@ export const fetchJobs = async () => {
 // Create a new job
 export const createJob = async (jobData) => {
   try {
-    const response = await axios.post(API_URL, jobData);
+    const response = await axios.post(`${API_URL}/organization/job`, jobData);
     return response.data;
   } catch (error) {
     console.error("Error creating job:", error);
@@ -27,7 +27,7 @@ export const createJob = async (jobData) => {
 // Get a specific job by ID
 export const getJobById = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/${id}`);
+    const response = await axios.get(`${API_URL}/organization/job/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching job:", error);
@@ -38,7 +38,10 @@ export const getJobById = async (id) => {
 // Update a job
 export const updateJob = async (id, jobData) => {
   try {
-    const response = await axios.put(`${API_URL}/${id}`, jobData);
+    const response = await axios.put(
+      `${API_URL}/organization/job/${id}`,
+      jobData
+    );
     return response.data;
   } catch (error) {
     console.error("Error updating job:", error);
@@ -49,7 +52,7 @@ export const updateJob = async (id, jobData) => {
 // Delete a job
 export const deleteJob = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/${id}`);
+    const response = await axios.delete(`${API_URL}/organization/job/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error deleting job:", error);
